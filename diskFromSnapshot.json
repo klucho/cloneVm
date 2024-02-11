@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "diskName": {
+            "type": "string",
+            "defaultValue": "vmDisk1"
+        },
+        "location": {
+            "type": "string"
+        },
+        "diskSizeGb": {
+            "type": "int",
+            "defaultValue": 128
+        },
+        "sourceResourceId": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "createOption": "copy",
+        "sku": "StandardSSD_LRS",
+        "diskEncryptionSetType": "EncryptionAtRestWithPlatformKey",
+        "networkAccessPolicy": "AllowAll",
+        "publicNetworkAccess": "Enabled",
+        "dataAccessAuthMode": "AzureActiveDirectory"
+    },
+    "resources": [
+        {
+            "apiVersion": "2022-03-02",
+            "type": "Microsoft.Compute/disks",
+            "name": "[parameters('diskName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "creationData": {
+                    "createOption": "[variables('createOption')]",
+                    "sourceResourceId": "[parameters('sourceResourceId')]"
+                },
+                "diskSizeGB": "[parameters('diskSizeGb')]",
+                "encryption": {
+                    "type": "[variables('diskEncryptionSetType')]"
+                },
+                "dataAccessAuthMode": "[variables('dataAccessAuthMode')]",
+                "networkAccessPolicy": "[variables('networkAccessPolicy')]",
+                "publicNetworkAccess": "[variables('publicNetworkAccess')]"
+            },
+            "sku": {
+                "name": "[variables('sku')]"
+            },
+            "tags": {}
+        }
+    ]
+}
